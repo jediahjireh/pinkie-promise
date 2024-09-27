@@ -38,7 +38,7 @@ export default function PinkiePromise({ setFireConfetti }: PinkiePromiseProps) {
 
   // reset dragging status
   function handleDragEnd() {
-    setIsDragging(false); // reset dragging status to false
+    setIsDragging(false);
   }
 
   // function to handle drag over
