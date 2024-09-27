@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Confetti from "./Confetti";
 import toast from "react-hot-toast";
+import { BsArrowLeft } from "react-icons/bs";
 
 export default function PinkiePromise() {
   const [step, setStep] = useState(1);
@@ -15,6 +16,8 @@ export default function PinkiePromise() {
   // state to track if pinkie promise (drag and drop) captcha is completed
   const [pinkiePromise, setPinkiePromise] = useState(false);
   const [fireConfetti, setFireConfetti] = useState<boolean>(false);
+  // dragging status
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +28,12 @@ export default function PinkiePromise() {
   function handleDragStart(e: React.DragEvent<HTMLImageElement>) {
     e.dataTransfer.setData("text/plain", "hand");
     e.stopPropagation();
+    setIsDragging(true);
+  }
+
+  // reset dragging status
+  function handleDragEnd() {
+    setIsDragging(false); // reset dragging status to false
   }
 
   // function to handle drag over
@@ -47,7 +56,7 @@ export default function PinkiePromise() {
     const dropY = e.clientY - dropArea.top;
 
     // threshold for correct drop (adjust value as needed if image size changes)
-    const threshold = 30;
+    const threshold = 40;
 
     // check if the drop is within the threshold on the right side of the left image
     if (
@@ -212,26 +221,44 @@ export default function PinkiePromise() {
                       className="w-32 h-full"
                     >
                       <motion.div
-                        animate={{ rotate: [5, -5] }}
+                        className="w-32 h-full relative flex"
+                        initial={{ x: 0 }}
+                        // only animate when not dragging
+                        animate={
+                          isDragging
+                            ? {
+                                x: [0, 0],
+                                rotate: [5, -5],
+                              }
+                            : {
+                                // move to the right then back to the left - draggable demonstration
+                                x: [0, -50],
+                              }
+                        }
                         transition={{
+                          duration: 2,
                           repeat: Infinity,
-                          duration: 1,
-                          repeatType: "reverse",
+                          repeatType: "loop",
+                          // easing function for smoothness
+                          ease: "easeInOut",
                         }}
                       >
+                        {/* only show arrow during dragging demonstration */}
+                        {!isDragging && (
+                          <span className="absolute w-4 h-4 left-[30%] transform translate-y-7">
+                            <BsArrowLeft />
+                          </span>
+                        )}
                         <Image
                           src="./hand-right.svg"
-                          className="w-32 h-full"
+                          className="w-32 h-full mr-12"
                           alt="Right hand extending pinkie in a pinkie promise gesture"
                           draggable={true}
                           onDragStart={handleDragStart}
+                          onDragEnd={handleDragEnd}
                           width={100}
                           height={100}
                         />
-
-                        <div className="flex justify-start w-full">
-                          <span className="text-6xl ml-10 ">←</span>
-                        </div>
                       </motion.div>
                     </div>
                   </>
