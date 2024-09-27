@@ -27,10 +27,10 @@ interface ConfettiProps {
 export default function Confetti({
   fireConfetti,
   particleRatio = 0.25,
-  spread = 40,
-  startVelocity = 45,
+  spread = 500,
+  startVelocity = 20,
   decay = 0.9,
-  scalar = 0.8,
+  scalar = 1,
 }: ConfettiProps) {
   const refAnimationInstance = useRef<ConfettiInstance | null>(null);
 
@@ -50,8 +50,8 @@ export default function Confetti({
       if (refAnimationInstance.current) {
         refAnimationInstance.current({
           ...opts,
-          origin: { x: 0.5, y: 0.3 },
-          particleCount: Math.floor(300 * particleRatio),
+          origin: { x: 0.5, y: 0 },
+          particleCount: Math.floor(500 * particleRatio),
         });
       }
     },
@@ -88,6 +88,7 @@ export default function Confetti({
         height: "100%",
         top: 0,
         left: 0,
+        zIndex: 10,
       }}
     />
   );
