@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { BsArrowLeft } from "react-icons/bs";
+import html2canvas from "html2canvas";
+
 interface PinkiePromiseProps {
   setFireConfetti: (value: boolean) => void;
 }
@@ -18,7 +20,6 @@ export default function PinkiePromise({ setFireConfetti }: PinkiePromiseProps) {
   const [promiser, setPromiser] = useState("");
   // state to track if pinkie promise (drag and drop) captcha is completed
   const [pinkiePromise, setPinkiePromise] = useState(false);
-
   // dragging status
   const [isDragging, setIsDragging] = useState(false);
 
@@ -74,6 +75,25 @@ export default function PinkiePromise({ setFireConfetti }: PinkiePromiseProps) {
     }
   }
 
+  // take screenshot and download the image
+  const downloadImage = (canvas: HTMLCanvasElement) => {
+    const now = new Date();
+    const dateString = `${now.getFullYear()}-${(now.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")} (${now
+      .getHours()
+      .toString()
+      .padStart(2, "0")}h${now.getMinutes().toString().padStart(2, "0")})`;
+    // create a link element
+    const link = document.createElement("a");
+    // set href to the image data
+    link.href = canvas.toDataURL("image/png");
+    // set the download file name
+    link.download = `pinkie-promise-${dateString}.png`;
+    // trigger the download
+    link.click();
+  };
+
   // effect to trigger success actions when pinkie promise is true
   useEffect(() => {
     if (pinkiePromise) {
@@ -88,13 +108,31 @@ export default function PinkiePromise({ setFireConfetti }: PinkiePromiseProps) {
           primary: "#F48FB1",
           secondary: "#FFEBEE",
         },
+
+        duration: 5000,
       });
+
       // trigger confetti in parent
       setFireConfetti(true);
       // stop confetti after a little
       setTimeout(() => setFireConfetti(false), 15000);
       // increment step count to adjust display
       setStep((prevStep) => prevStep + 1);
+
+      setTimeout(
+        () => {
+          html2canvas(document.body)
+            .then((canvas) => {
+              // call the download function
+              downloadImage(canvas);
+            })
+            .catch((error) => {
+              console.error("Error capturing screenshot:", error);
+            });
+        },
+        // delay screenshot capture to ensure rendering
+        2000
+      );
     }
   }, [pinkiePromise, setFireConfetti]);
 

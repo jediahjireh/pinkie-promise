@@ -8,11 +8,24 @@ import {
   GiBowTieRibbon,
   GiCupcake,
   GiFlamingo,
+  GiHeartKey,
   GiLipstick,
+  GiTeapot,
 } from "react-icons/gi";
+import { IoSunny } from "react-icons/io5";
+import { PiHighHeelFill } from "react-icons/pi";
 
 // icon background
-const icons = [GiBowTieRibbon, GiFlamingo, GiCupcake, GiLipstick];
+const icons = [
+  GiBowTieRibbon,
+  GiFlamingo,
+  GiCupcake,
+  GiLipstick,
+  GiTeapot,
+  PiHighHeelFill,
+  GiHeartKey,
+  IoSunny,
+];
 const numberOfIcons = 120;
 const spacing = 23;
 
@@ -32,7 +45,7 @@ export default function Home() {
   const [iconPositions] = useState(generateIconPositions());
 
   return (
-    <div className="min-h-screen font-mickey bg-pink-50 flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen capture font-mickey bg-pink-50 flex items-center justify-center px-4 relative overflow-hidden">
       <div className="z-0">
         {/* animated icons */}
         {iconPositions.map((position, i) => {
